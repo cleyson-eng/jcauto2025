@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "jcauto2025": {
+      "commandName": "Project"
+    },
+    "Acad": {
+      "commandName": "Executable",
+      "executablePath": "X:\\system_windows\\program\\Autodesk\\AutoCAD 2025\\acad.exe",
+      "commandLineArgs": " /product ACAD /language \"en-US\""
+    }
+  }
+}
