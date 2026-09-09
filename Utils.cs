@@ -238,13 +238,14 @@ namespace jcauto2025 {
 			public void tableSet(string handle, Table[] data) {
 				using (Transaction ac_transition = ac_database.TransactionManager.StartTransaction()) {
 					ObjectId idObj = ac_database.GetObjectId(false, new Handle(Convert.ToInt64(handle, 16)), 0);
-					if (!idObj.IsValid || idObj.IsNull || idObj.IsErased) {
+					if (!idObj.IsValid || idObj.IsNull || idObj.IsErased)
+					{
 						ac_editor.WriteMessage("\n Table handle " + handle + " is invalid");
 						return;
 					}
-					aacTable? table = ac_transition.GetObject(idObj, OpenMode.ForWrite) as aacTable;
+                    aacTable? table = ac_transition.GetObject(idObj, OpenMode.ForWrite) as aacTable;
 					if (table == null) {
-						ac_editor.WriteMessage("\n Table handle " + handle + " is not a table");
+						ac_editor.WriteMessage("\n Table handle " + handle + " is not a table ["+ idObj.ObjectClass.DxfName + "]");
 						return;
 					}
 					if (table == null) return;
@@ -345,6 +346,11 @@ namespace jcauto2025 {
 			engine.SetValue("Table", typeof(Table));
 			engine.SetValue("TableCell", typeof(TableCell));
 			return engine;
+		}
+		public static void scriptAPIRun(Engine eg, String src) {
+			String id = "main"+new Random().NextInt64().ToString();
+			eg.Modules.Add(id, src);
+			eg.Modules.Import(id);
 		}
 		/*
 		public class TagContext {

@@ -95,7 +95,7 @@ namespace jcauto2025
 				}
 
 				var engine = scriptAPILoad(ed, db);
-				engine.Execute(script);
+				scriptAPIRun(engine, script);
 			}
 			doc.Editor.Regen();
 		}
