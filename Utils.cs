@@ -79,6 +79,8 @@ namespace jcauto2025 {
 			public void setBlockProperties(ObjectId id, Dictionary<string, object> props);
 			public void setBlockContent(string handle, Point3d i, Point3d e, Point3d origin);
 			public void tableSet(string handle, Table[] data);
+			public void updateLibraryBlocks();
+			public void updateScales();
 		}
 		public class ScriptAPIImplement: ScriptAPI {
 			public class ObjectPoly : ScriptAPI.Object {
@@ -300,6 +302,12 @@ namespace jcauto2025 {
 					ac_transition.Commit();
 				}
 			}
+			public void updateLibraryBlocks() {
+				jcauto2025.Utils.updateBlocks(ac_database, ac_editor);
+			}
+			public void updateScales() {
+				Utils.generateScales(ac_database, LifeCycle.single.scales);
+			}
 		}
 		public class LCModuleLoader : IModuleLoader {
 			public LCModuleLoader(){}
@@ -352,80 +360,6 @@ namespace jcauto2025 {
 			eg.Modules.Add(id, src);
 			eg.Modules.Import(id);
 		}
-		/*
-		public class TagContext {
-			public class ActionCount {
-				public string tag;
-				public Handle outputTable;
-				public int col;
-				public int row;
-			}
-			public class ActionCopy {
-				public string block;
-				public Handle outputTable;
-				public int col;
-				public int row;
-				public List<string> properties;
-			}
-			public List<ActionCount> actionCounts = new List<ActionCount>();
-			public List<ActionCopy> actionCopies = new List<ActionCopy>();
-			public Point3d window_min, window_max;
-			public Dictionary<string, int> count = new Dictionary<string, int>();
-			public static Point3d decode_3dpoint(string x) {
-				string[] v = x.Split(";");
-				double[] r = new double[3];
-				for (int i = 0; i < 3; i++)
-					r[i] = Double.Parse(v[i].Trim());
-				return new Point3d(r);
-			}
-			public void decode_minmax(string x) {
-				string[] parts = x.Split("/");
-				window_min = decode_3dpoint(parts[0]);
-				window_max = decode_3dpoint(parts[1]);
-			}
-			public static void decode_cell(string x, out int col, out int row) {
-				col = 0; row = 0;
-				char[] cell = x.ToUpperInvariant().ToCharArray();
-				for (int i = 0, e = cell.Length; i < e; i++) {
-					if (cell[i] >= 48 && cell[i] < 58)
-						row = row * 10 + (cell[i] - 48);
-					if (cell[i] >= 65 && cell[i] < 91)
-						col = col * 26 + (cell[i] - 65);
-				}
-			}
-			public bool decode_action(string query, string output) {
-				if (query.StartsWith("#")) {
-					ActionCount ac = new ActionCount();
-					ac.tag = query;
-					string[] outf = output.Split('.');
-					ac.outputTable = new Handle(Convert.ToInt64(outf[0].ToUpperInvariant(), 16));
-					decode_cell(outf[1], out ac.col, out ac.row);
-					actionCounts.Add(ac);
-				} else if (query.StartsWith("!")) {
-					ActionCopy ac = new ActionCopy();
-					ac.block = query.Substring(1);
-					string[] outf = output.Split(['.', '/']);
-					ac.outputTable = new Handle(Convert.ToInt64(outf[0].ToUpperInvariant(), 16));
-					decode_cell(outf[1], out ac.col, out ac.row);
-					for (int i = 2, e = outf.Length; i < e; i++)
-						ac.properties.Add(outf[i]);
-					actionCopies.Add(ac);
-				} else return false;
-				return true;
-			}
-			public bool decode_table(ref int i, Autodesk.AutoCAD.DatabaseServices.Table table) {
-				if (table.Columns.Count < 3) return false;
-				if (table.Rows.Count <= i) return false;
-				Autodesk.AutoCAD.DatabaseServices.Cell window = table.Cells[i, 0];
-				int ei = window.BottomRow + 1;
-				decode_minmax(window.Contents[0].Value as string);
-				actionCounts.Clear();
-				actionCopies.Clear();
-				for (int e = table.Rows.Count; i < e; i++)
-					decode_action(table.Cells[i, 1].Contents[0].Value as string, table.Cells[i, 2].Contents[0].Value as string);
-				return true;
-			}
-		}*/
 		private static void fixScale(ObjectContextCollection scaleCollection, string scaleName, double f1, double f2) {
 			string[] parts = scaleName.Split('/');
 			double scale1, scale2;
