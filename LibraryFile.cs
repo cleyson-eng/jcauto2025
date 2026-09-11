@@ -13,10 +13,11 @@ using System.Dynamic;
 namespace jcauto2025 {
 
 	public class LibraryFile {
-		public LibraryFile (string path) {
+		public bool directFile { get; private set; }
+		public LibraryFile (string path, bool directFile = false) {
 			this.path = path;
 			kv = Path.GetFileNameWithoutExtension(path);
-			dbLoad();
+			this.directFile = directFile;
 		}
 		public string kv { get; private set; }
 		public string path;

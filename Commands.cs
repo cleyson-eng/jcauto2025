@@ -44,6 +44,18 @@ namespace jcauto2025
 			}
 			doc.Editor.Regen();
 		}
+		public void JUNLOAD() {
+			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
+			if (doc == null) return;
+
+			Database destDb = doc.Database;
+			Editor ed = doc.Editor;
+
+			using (DocumentLock dlock = doc.LockDocument()) {
+				foreach (LibraryFile lf in LifeCycle.single.libraries)
+					lf.dbUnload();
+			}
+		}
 		[CommandMethod("JUPDATE")]
 		public void JUPDATE() {
 			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
@@ -53,8 +65,7 @@ namespace jcauto2025
 			Editor ed = doc.Editor;
 
 			using (DocumentLock dlock = doc.LockDocument()) {
-				foreach (LibraryFile lf in LifeCycle.single.libraries)
-					lf.dbLoad();
+				Utils.updateLibraries();
 			}
 		}
 		[CommandMethod("JLIBRARY")]

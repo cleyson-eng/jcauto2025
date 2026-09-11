@@ -397,6 +397,29 @@ namespace jcauto2025 {
 			}
 			return result;
 		}
+		public static void updateLibraries() {
+			LifeCycle lc = LifeCycle.single;
+			foreach (LibraryFile file in lc.libraries) {
+				if (!File.Exists(file.path)) {
+					file.dbUnload();
+					lc.libraries.Remove(file);
+				}
+			}
+			foreach (string dir in lc.directories) {
+				foreach (string file in Directory.GetFiles(dir)) {
+					if (file.EndsWith(".dwg")) {
+						bool found = false;
+						foreach(LibraryFile file2 in lc.libraries) {
+							if (file2.path == file) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) lc.libraries.Add(new LibraryFile(file));
+					}
+				}
+			}
+		}
 		public static void updateBlocks(Database destDb, Editor ed) {
 
 			int count_textStyles = 0;
@@ -418,6 +441,8 @@ namespace jcauto2025 {
 					) update = false;
 				}
 				if (!update) continue;
+				if (lf.db == null)
+					lf.dbLoad();
 				count_libraries++;
 				count_textStyles += Utils.updateTextStyleTable(destDb, lf.db);
 				count_dimStyles += Utils.updateDimStyleTable(destDb, lf.db);

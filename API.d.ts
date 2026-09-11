@@ -24,6 +24,10 @@ declare global {
 	}
 	class Point3d {
 		constructor (x:double, y:double, z:double);
+		X:double
+		Y:double
+		Z:double
+		DistanceTo:(w:Point3d)=>double
 	}
 	namespace API {
 		interface Object {

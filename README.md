@@ -8,8 +8,9 @@ SCALES:1/75[;1/50[...]] default: 1/50;1/75;1/100
 ## Commands
 - JCA_INFO: show loaded configuration.
 - JSETUP_SCALES: setup/fix scales.
-- JUPDATE: sync. cache/update all file dwg data from LIBRARY paths (for block auto update).
-- JLIBRARY: update blocks from current file within all dwg files found in LIBRARY paths.
+- JUNLOAD: unload cached LIBRARY dwg's.
+- JUPDATE: resync find new dwg's in LIBRARY paths.
+- JLIBRARY: update blocks from current file within any dwg files found in LIBRARY paths.
 - JHANDLE: get information and the HANDLE of an entity.
 - JRUN: run JS code (MTEXT/TEXT)
 

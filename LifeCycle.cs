@@ -34,13 +34,9 @@ namespace jcauto2025 {
                     case "library":
                         foreach (string value in values) {
                             if (File.Exists(value)) {
-                                libraries.Add(new LibraryFile(value));
+                                libraries.Add(new LibraryFile(value, true));
                             } else if (Directory.Exists(value)) {
                                 directories.Add(value);
-                                foreach (string file in Directory.GetFiles(value)) {
-                                    if (file.EndsWith(".dwg"))
-                                        libraries.Add(new LibraryFile(file));
-                                }
                             }
                         }
                         break;
@@ -54,6 +50,7 @@ namespace jcauto2025 {
 				scales.Add("1/75");
 				scales.Add("1/100");
 			}
+            Utils.updateLibraries();
         }
         public void Terminate() {
             scales.Clear();
