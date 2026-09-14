@@ -44,6 +44,37 @@ namespace jcauto2025
 			}
 			doc.Editor.Regen();
 		}
+		[CommandMethod("JTAG", CommandFlags.UsePickSet)]
+		public void JTAG() {
+			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
+			if (doc == null) return;
+
+			Database db = doc.Database;
+			Editor ed = doc.Editor;
+
+			PromptSelectionResult? result = Utils.getSelection("Select objects to set tag", ed, false);
+			if (result == null) return;
+
+			string? tag = Utils.getText("Tag to set: ", ed);
+			if (tag == null) return;
+
+			using (DocumentLock dlock = doc.LockDocument())
+			using (Transaction tr = db.TransactionManager.StartTransaction()) {
+				foreach (SelectedObject obj in result.Value) {
+					if (obj != null) {
+						Entity entity = (Entity)tr.GetObject(obj.ObjectId, OpenMode.ForWrite);
+						entity.Hyperlinks.Clear();
+						entity.Hyperlinks.Add(new HyperLink() {
+							Description=tag,
+							Name=""
+						});
+					}
+				}
+				tr.Commit();
+			}
+			doc.Editor.Regen();
+		}
+		[CommandMethod("JUNLOAD")]
 		public void JUNLOAD() {
 			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
 			if (doc == null) return;
@@ -81,7 +112,7 @@ namespace jcauto2025
 			}
 			doc.Editor.Regen();
 		}
-		[CommandMethod("JRUN")]
+		[CommandMethod("JRUN", CommandFlags.UsePickSet)]
 		public void JRUN() {
 			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
 			if (doc == null) return;
@@ -110,7 +141,7 @@ namespace jcauto2025
 			}
 			doc.Editor.Regen();
 		}
-		[CommandMethod("JHANDLE")]
+		[CommandMethod("JHANDLE", CommandFlags.UsePickSet)]
 		public void JHANDLE() {
 			Document doc = AcadApp.DocumentManager.MdiActiveDocument;
 			if (doc == null) return;

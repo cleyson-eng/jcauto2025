@@ -287,7 +287,7 @@ namespace jcauto2025 {
 								TableCell cell = data[i].cells[iir][ic];
 								if (cell.rowSpan > 0 || cell.colSpan > 0)
 									table.MergeCells(CellRange.Create(table, ir, ic, ir + cell.rowSpan - 1, ic + cell.colSpan - 1));
-								c = table.Cells[ir, 0];
+								c = table.Cells[ir, ic];
 								if (c.IsMerged != null && c.TopLeft.Column != ic && c.TopLeft.Row != ir) continue;
 								c.TextString = cell.data.ToString();
 								c.Borders.Bottom.IsVisible = cell.bottom;
@@ -385,17 +385,24 @@ namespace jcauto2025 {
 		public static PromptSelectionResult? getSelection(string txt, Editor ed, bool single) {
 			PromptSelectionResult result = ed.SelectImplied();
 			if (result == null || result.Status != PromptStatus.OK || result.Value.Count == 0 || (single && result.Value.Count != 1)) {
-				PromptSelectionOptions opcoes = new PromptSelectionOptions();
-				opcoes.MessageForAdding = "\n"+txt;
-				opcoes.SingleOnly = true;
-
-				result = ed.GetSelection(opcoes);
+				result = ed.GetSelection(new PromptSelectionOptions() {
+					MessageForAdding = "\n" + txt,
+					SingleOnly = single
+				});
 				if (result.Status != PromptStatus.OK) {
 					ed.WriteMessage("\n  Selection canceled");
 					return null;
 				}
 			}
 			return result;
+		}
+		public static string? getText(string txt, Editor ed, bool allowspaces = true) {
+			PromptResult stringResult = ed.GetString(new PromptStringOptions("\n" + txt) {
+				AllowSpaces = allowspaces
+			});
+			if (stringResult.Status == PromptStatus.OK && stringResult.StringResult != "")
+				return stringResult.StringResult;
+			return null;
 		}
 		public static void updateLibraries() {
 			LifeCycle lc = LifeCycle.single;
