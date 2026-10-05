@@ -162,7 +162,6 @@ namespace jcauto2025 {
                             //attdefs
                             foreach (ObjectId attId in bref.AttributeCollection) {
                                 AttributeReference attRef = (AttributeReference)ac_transition.GetObject(attId, OpenMode.ForRead);
-                                // Armazena usando a Tag em letras maiúsculas para evitar erros de digitação
                                 props[attRef.Tag] = attRef.TextString;
                             }
 
@@ -204,7 +203,14 @@ namespace jcauto2025 {
 								prop.Value = newvalue;
 						}
 					}
-					ac_transition.Commit();
+                    //attdefs
+                    foreach (ObjectId attId in bref.AttributeCollection) {
+                        AttributeReference attRef = (AttributeReference)ac_transition.GetObject(attId, OpenMode.ForWrite);
+						if (props.TryGetValue(attRef.Tag, out object newvalue) && newvalue is string newvaluestring)
+                            attRef.TextString = newvaluestring;
+                    }
+
+                    ac_transition.Commit();
 				}
 			}
 			public void setBlockContent(string handle, Point3d init, Point3d eend, Point3d origin) {
