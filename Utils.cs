@@ -159,7 +159,14 @@ namespace jcauto2025 {
 								foreach (DynamicBlockReferenceProperty prop in bref.DynamicBlockReferencePropertyCollection)
 									props[prop.PropertyName] = prop.Value;
 							}
-							ret.Add(new ObjectBlock(id, bref.Name, data, bref.Position, props));
+                            //attdefs
+                            foreach (ObjectId attId in bref.AttributeCollection) {
+                                AttributeReference attRef = (AttributeReference)ac_transition.GetObject(attId, OpenMode.ForRead);
+                                // Armazena usando a Tag em letras maiúsculas para evitar erros de digitação
+                                props[attRef.Tag] = attRef.TextString;
+                            }
+
+                            ret.Add(new ObjectBlock(id, bref.Name, data, bref.Position, props));
 						}
 						if (entity == null || entity.Hyperlinks == null || entity.Hyperlinks.Count == 0 || !entity.Hyperlinks[0].DisplayString.StartsWith('#')) continue;
 						data = entity.Hyperlinks[0].DisplayString;
